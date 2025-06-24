@@ -28,3 +28,14 @@ QUnit.test('marks matching name as valid', assert => {
   assert.equal(recs[1].IS_VALID(), '0');
 });
 
+QUnit.module('collectIsValid');
+QUnit.test('joins values with new lines', assert => {
+  const recs = [
+    { IS_VALID: ko.observable('1') },
+    { IS_VALID: ko.observable('0') },
+    { IS_VALID: ko.observable('2') }
+  ];
+  const result = collectIsValid(recs);
+  assert.equal(result, '1\n0\n2');
+});
+
