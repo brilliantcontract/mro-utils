@@ -27,6 +27,9 @@ Use following header for pages:
     </head>
     <body class="container mt-3">
 
+Apply Bootstrap classes to form elements and other page elements.
+
+Use knockout to bind javascript functionality to web forms.
 
 
 ### GIT commits format
