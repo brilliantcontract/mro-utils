@@ -1,10 +1,11 @@
-import { parseQueries } from './utils.js';
+import { parseQueries, createCachedFetcher } from './utils.js';
 
 const API_KEY = '0c833bbdac7eb41ed54b9b786e375ab15492c440';
 let stopRequested = false;
 let isRunning = false;
 let queries = [];
 let currentIndex = 0;
+const fetchQueryCached = createCachedFetcher(fetchQuery);
 
 function updateStatus() {
   const statusLabel = document.getElementById('statusLabel');
@@ -37,7 +38,7 @@ async function processNext() {
   }
   const query = queries[currentIndex];
   try {
-    const result = await fetchQuery(query);
+    const result = await fetchQueryCached(query);
     const output = document.getElementById('output');
     output.textContent += JSON.stringify(result).replace(/\n/g, '') + '\n';
   } catch (err) {
