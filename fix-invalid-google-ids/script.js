@@ -11,7 +11,6 @@ function AppViewModel() {
 
   this.validate = () => {
     validateRecords(this.records());
-    this.records.valueHasMutated();
   };
 }
 
