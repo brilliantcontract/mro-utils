@@ -11,8 +11,10 @@ function updateStatus() {
   const statusLabel = document.getElementById('statusLabel');
   statusLabel.textContent = `${currentIndex} / ${queries.length}`;
   const progressBar = document.getElementById('progressBar');
-  progressBar.max = queries.length;
-  progressBar.value = currentIndex;
+  const percent = queries.length ? (currentIndex / queries.length) * 100 : 0;
+  progressBar.style.width = `${percent}%`;
+  progressBar.setAttribute('aria-valuenow', currentIndex);
+  progressBar.setAttribute('aria-valuemax', queries.length);
 }
 
 export async function fetchQuery(query) {

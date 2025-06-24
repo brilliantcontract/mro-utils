@@ -18,12 +18,16 @@
     </head>
     <body class="container mt-3">
   <h1>Serper.dev Caller</h1>
-  <textarea id="queries" placeholder="Enter queries, one per line"></textarea>
-  <br>
-  <button id="toggleButton" onclick="toggleStartStop()">Start</button>
-  <label id="statusLabel">0 / 0</label>
-  <br>
-  <progress id="progressBar" value="0" max="0" style="width:100%"></progress>
+  <div class="form-group">
+    <textarea id="queries" class="form-control" placeholder="Enter queries, one per line"></textarea>
+  </div>
+  <div class="form-group">
+    <button id="toggleButton" class="btn btn-primary" onclick="toggleStartStop()">Start</button>
+    <label id="statusLabel" class="ml-2">0 / 0</label>
+  </div>
+  <div class="progress mb-3">
+    <div id="progressBar" class="progress-bar" role="progressbar" style="width:0%" aria-valuenow="0" aria-valuemin="0" aria-valuemax="0"></div>
+  </div>
   <pre><code id="output"></code></pre>
 
   <script type="module" src="./script.js"></script>
