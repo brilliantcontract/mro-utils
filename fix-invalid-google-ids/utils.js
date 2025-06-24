@@ -70,6 +70,11 @@ function validateRecords(records) {
     group.forEach(r => {
       if (!getIsValid(r)) setIsValid(r, '0');
     });
+
+    const allZero = group.every(r => getIsValid(r) === '0');
+    if (allZero) {
+      group.forEach(r => setIsValid(r, ''));
+    }
   }
   return records;
 }
