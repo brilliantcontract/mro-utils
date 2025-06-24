@@ -10,7 +10,16 @@ function parseTabText(text) {
     const parts = lines[i].split('\t');
     const obj = {};
     cols.forEach((c, idx) => {
-      obj[c] = parts[idx] || '';
+      const val = parts[idx] || '';
+      if (c === 'IS_VALID') {
+        if (typeof ko !== 'undefined' && typeof ko.observable === 'function') {
+          obj[c] = ko.observable(val);
+        } else {
+          obj[c] = val;
+        }
+      } else {
+        obj[c] = val;
+      }
     });
     records.push(obj);
   }
@@ -27,7 +36,7 @@ function validateRecords(records) {
   for (const group of groups.values()) {
     const uniqueCities = new Set(group.map(r => r.CITY));
     if (uniqueCities.size > 1) {
-      group.forEach(r => r.IS_VALID = '2');
+      group.forEach(r => setIsValid(r, '2'));
       continue;
     }
 
@@ -41,7 +50,7 @@ function validateRecords(records) {
     });
 
     if (titleMatches.length === 1) {
-      group.forEach(r => r.IS_VALID = r === titleMatches[0].rec ? '1' : '0');
+      group.forEach(r => setIsValid(r, r === titleMatches[0].rec ? '1' : '0'));
       continue;
     }
 
@@ -53,14 +62,28 @@ function validateRecords(records) {
       });
       if (addressMatches.length >= 1) {
         const chosen = addressMatches[0].rec;
-        group.forEach(r => r.IS_VALID = r === chosen ? '1' : '0');
+        group.forEach(r => setIsValid(r, r === chosen ? '1' : '0'));
         continue;
       }
     }
 
-    group.forEach(r => { if (!r.IS_VALID) r.IS_VALID = '0'; });
+    group.forEach(r => {
+      if (!getIsValid(r)) setIsValid(r, '0');
+    });
   }
   return records;
+}
+
+function setIsValid(rec, value) {
+  if (typeof rec.IS_VALID === 'function') {
+    rec.IS_VALID(value);
+  } else {
+    rec.IS_VALID = value;
+  }
+}
+
+function getIsValid(rec) {
+  return typeof rec.IS_VALID === 'function' ? rec.IS_VALID() : rec.IS_VALID;
 }
 
 if (typeof window !== 'undefined') {

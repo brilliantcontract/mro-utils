@@ -14,16 +14,17 @@ QUnit.test('parses tab separated lines', assert => {
   const result = parseTabText(text);
   assert.equal(result.length, 1);
   assert.equal(result[0].NAME, 'foo');
+  assert.equal(typeof result[0].IS_VALID, 'function', 'IS_VALID is observable');
 });
 
 QUnit.module('validateRecords');
 QUnit.test('marks matching name as valid', assert => {
   const recs = [
-    {ID:'1', GOOGLE_PLACE_ID:'a', NAME:'Foo', ADDRESS:'', CITY:'X', STATE:'S', ZIP:'', IS_VALID_MANUAL:'', IS_VALID:'', SEARCH_QUERY:'q', JSON_DATA_FROM_GOOGLE_MAP:'{"places":[{"title":"Foo","address":"addr"}]}'},
-    {ID:'2', GOOGLE_PLACE_ID:'b', NAME:'Bar', ADDRESS:'', CITY:'X', STATE:'S', ZIP:'', IS_VALID_MANUAL:'', IS_VALID:'', SEARCH_QUERY:'q', JSON_DATA_FROM_GOOGLE_MAP:'{"places":[{"title":"Foo","address":"addr"}]}'}
+    {ID:'1', GOOGLE_PLACE_ID:'a', NAME:'Foo', ADDRESS:'', CITY:'X', STATE:'S', ZIP:'', IS_VALID_MANUAL:'', IS_VALID: ko.observable(''), SEARCH_QUERY:'q', JSON_DATA_FROM_GOOGLE_MAP:'{"places":[{"title":"Foo","address":"addr"}]}'},
+    {ID:'2', GOOGLE_PLACE_ID:'b', NAME:'Bar', ADDRESS:'', CITY:'X', STATE:'S', ZIP:'', IS_VALID_MANUAL:'', IS_VALID: ko.observable(''), SEARCH_QUERY:'q', JSON_DATA_FROM_GOOGLE_MAP:'{"places":[{"title":"Foo","address":"addr"}]}'}
   ];
   validateRecords(recs);
-  assert.equal(recs[0].IS_VALID, '1');
-  assert.equal(recs[1].IS_VALID, '0');
+  assert.equal(recs[0].IS_VALID(), '1');
+  assert.equal(recs[1].IS_VALID(), '0');
 });
 
