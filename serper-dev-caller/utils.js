@@ -16,3 +16,8 @@ export function createCachedFetcher(fetcher) {
     return result;
   };
 }
+
+if (typeof window !== 'undefined') {
+  window.parseQueries = parseQueries;
+  window.createCachedFetcher = createCachedFetcher;
+}

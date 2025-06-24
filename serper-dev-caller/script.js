@@ -1,5 +1,3 @@
-import { parseQueries, createCachedFetcher } from './utils.js';
-
 let stopRequested = false;
 let isRunning = false;
 let queries = [];
