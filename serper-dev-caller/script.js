@@ -1,11 +1,14 @@
 import { parseQueries, createCachedFetcher } from './utils.js';
 
-const API_KEY = '0c833bbdac7eb41ed54b9b786e375ab15492c440';
 let stopRequested = false;
 let isRunning = false;
 let queries = [];
 let currentIndex = 0;
 const fetchQueryCached = createCachedFetcher(fetchQuery);
+
+function getApiKey() {
+  return document.getElementById('apiKey').value.trim();
+}
 
 function updateStatus() {
   const statusLabel = document.getElementById('statusLabel');
@@ -19,7 +22,7 @@ function updateStatus() {
 
 export async function fetchQuery(query) {
   const myHeaders = new Headers();
-  myHeaders.append('X-API-KEY', API_KEY);
+  myHeaders.append('X-API-KEY', getApiKey());
   myHeaders.append('Content-Type', 'application/json');
   const raw = JSON.stringify({ q: query });
   const requestOptions = {
