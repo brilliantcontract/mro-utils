@@ -1,3 +1,11 @@
+### JavaScript
+
+It's web application, not NodeJS and there shouldn't be used npm command/packages.
+
+JavaScript should not use modules like this <script type="module"> or "import" keywords.
+
+
+
 ### Tests
 
 Use qunit library to create tests for JavaScript functions.
