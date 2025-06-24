@@ -28,6 +28,16 @@ QUnit.test('marks matching name as valid', assert => {
   assert.equal(recs[1].IS_VALID(), '0');
 });
 
+QUnit.test('clears values when all are invalid', assert => {
+  const recs = [
+    {ID:'1', GOOGLE_PLACE_ID:'a', NAME:'Foo', ADDRESS:'', CITY:'X', STATE:'S', ZIP:'', IS_VALID_MANUAL:'', IS_VALID: ko.observable(''), SEARCH_QUERY:'w', JSON_DATA_FROM_GOOGLE_MAP:'{"places":[]}'},
+    {ID:'2', GOOGLE_PLACE_ID:'b', NAME:'Bar', ADDRESS:'', CITY:'X', STATE:'S', ZIP:'', IS_VALID_MANUAL:'', IS_VALID: ko.observable(''), SEARCH_QUERY:'w', JSON_DATA_FROM_GOOGLE_MAP:'{"places":[]}'}
+  ];
+  validateRecords(recs);
+  assert.equal(recs[0].IS_VALID(), '');
+  assert.equal(recs[1].IS_VALID(), '');
+});
+
 QUnit.module('collectIsValid');
 QUnit.test('joins values with new lines', assert => {
   const recs = [
