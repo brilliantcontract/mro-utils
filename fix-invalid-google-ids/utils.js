@@ -62,3 +62,8 @@ export function validateRecords(records) {
   }
   return records;
 }
+
+if (typeof window !== 'undefined') {
+  window.parseTabText = parseTabText;
+  window.validateRecords = validateRecords;
+}

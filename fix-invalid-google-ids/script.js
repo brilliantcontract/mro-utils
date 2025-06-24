@@ -1,5 +1,3 @@
-import { parseTabText, validateRecords } from './utils.js';
-
 function AppViewModel() {
   this.rawText = ko.observable('');
   this.records = ko.observableArray([]);

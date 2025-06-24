@@ -1,4 +1,4 @@
-import { parseQueries } from '../serper-dev-caller/utils.js';
+// parseQueries, parseTabText and validateRecords are loaded globally
 
 QUnit.module('parseQueries');
 
@@ -7,7 +7,6 @@ QUnit.test('splits and trims lines', assert => {
   const expected = ['foo', 'bar', 'baz'];
   assert.deepEqual(parseQueries(input), expected);
 });
-import { parseTabText, validateRecords } from '../fix-invalid-google-ids/utils.js';
 
 QUnit.module('parseTabText');
 QUnit.test('parses tab separated lines', assert => {
