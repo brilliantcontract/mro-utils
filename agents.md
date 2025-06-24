@@ -1,4 +1,8 @@
+### Tests
+
 Use qunit library to create tests for JavaScript functions.
+
+Create a webpage to run tests, so I can run it from web browser. I do not won't to install any npm packages.
 
 
 
