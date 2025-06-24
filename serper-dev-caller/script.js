@@ -18,7 +18,7 @@ function updateStatus() {
   progressBar.setAttribute('aria-valuemax', queries.length);
 }
 
-export async function fetchQuery(query) {
+async function fetchQuery(query) {
   const myHeaders = new Headers();
   myHeaders.append('X-API-KEY', getApiKey());
   myHeaders.append('Content-Type', 'application/json');
@@ -53,7 +53,7 @@ async function processNext() {
   setTimeout(processNext, 0);
 }
 
-export function toggleStartStop() {
+function toggleStartStop() {
   if (isRunning) {
     stopRequested = true;
     return;
@@ -69,12 +69,12 @@ export function toggleStartStop() {
   processNext();
 }
 
-export function copyOutput() {
+function copyOutput() {
   const text = document.getElementById('output').textContent;
   navigator.clipboard.writeText(text);
 }
 
-export function cleanQueries() {
+function cleanQueries() {
   document.getElementById('queries').value = '';
 }
 

@@ -1,11 +1,11 @@
-export function parseQueries(text) {
+function parseQueries(text) {
   return text
     .split(/\r?\n/)
     .map(line => line.trim())
     .filter(line => line.length > 0);
 }
 
-export function createCachedFetcher(fetcher) {
+function createCachedFetcher(fetcher) {
   const cache = new Map();
   return async function(query) {
     if (cache.has(query)) {
