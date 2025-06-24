@@ -12,6 +12,11 @@ function AppViewModel() {
   this.validate = () => {
     validateRecords(this.records());
   };
+
+  this.copyIsValid = () => {
+    const text = collectIsValid(this.records());
+    navigator.clipboard.writeText(text);
+  };
 }
 
 ko.applyBindings(new AppViewModel());

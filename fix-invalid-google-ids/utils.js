@@ -86,7 +86,12 @@ function getIsValid(rec) {
   return typeof rec.IS_VALID === 'function' ? rec.IS_VALID() : rec.IS_VALID;
 }
 
+function collectIsValid(records) {
+  return records.map(r => getIsValid(r)).join('\n');
+}
+
 if (typeof window !== 'undefined') {
   window.parseTabText = parseTabText;
   window.validateRecords = validateRecords;
+  window.collectIsValid = collectIsValid;
 }
