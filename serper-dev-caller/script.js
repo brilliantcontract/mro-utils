@@ -71,4 +71,15 @@ export function toggleStartStop() {
   processNext();
 }
 
+export function copyOutput() {
+  const text = document.getElementById('output').textContent;
+  navigator.clipboard.writeText(text);
+}
+
+export function cleanQueries() {
+  document.getElementById('queries').value = '';
+}
+
 window.toggleStartStop = toggleStartStop;
+window.copyOutput = copyOutput;
+window.cleanQueries = cleanQueries;
