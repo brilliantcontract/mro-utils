@@ -1,4 +1,4 @@
-export function parseTabText(text) {
+function parseTabText(text) {
   const lines = text.trim().split(/\r?\n/).filter(l => l.trim().length > 0);
   if (lines.length === 0) return [];
   const header = lines[0].split('\t');
@@ -17,7 +17,7 @@ export function parseTabText(text) {
   return records;
 }
 
-export function validateRecords(records) {
+function validateRecords(records) {
   const groups = new Map();
   for (const rec of records) {
     if (!groups.has(rec.SEARCH_QUERY)) groups.set(rec.SEARCH_QUERY, []);
