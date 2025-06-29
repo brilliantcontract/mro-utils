@@ -53,3 +53,4 @@ output-*.xml
 /iframe-extractor/nbproject/
 /iframe-extractor-web/nbproject/
 /library-cli/nbproject/
+/nbproject/private/
