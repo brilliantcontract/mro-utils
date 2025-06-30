@@ -94,14 +94,14 @@
             });
         }
 
-        async function askWebSearch(question, apiKey) {
+        async function askWebSearch(systemMsg, userMsg, apiKey) {
             const apiRequest = new Request('https://api.openai.com/v1/responses', {
                 method: 'POST',
                 headers: {
                     'Authorization': 'Bearer ' + apiKey,
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify(buildResponsesBody(question))
+                body: JSON.stringify(buildResponsesBody(systemMsg, userMsg))
             });
 
             let answer;
@@ -149,7 +149,8 @@ Authors:
 When you DO find a site, respond with only the URL \u2014 no other text.
 No comments, details, descriptions, or notes.`;
 
-            const systemPromptForMultipleAuthors = `If an author has no personal website, write: NOT FOUND.
+            const systemPromptForMultipleAuthors = `For each of the listed authors, perform a web search.
+If an author has no personal website, write: NOT FOUND.
 Return only the URL or NOT FOUND, one line per author, like:
 [Author]: [URL|NOT FOUND]
 
@@ -188,8 +189,7 @@ No comments, details, descriptions, or notes.`;
                 }
 
                 self.answer('Query has been sent to chatbot. Waiting answer \u2026');
-                var question = composeQuery(systemMsg, userMsg);
-                askWebSearch(question, self.apiKey())
+                askWebSearch(systemMsg, userMsg, self.apiKey())
                     .then(self.answer)
                     .catch(function(err){
                         console.error(err);
