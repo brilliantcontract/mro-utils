@@ -1,8 +1,11 @@
-function buildResponsesBody(query) {
+function buildResponsesBody(systemPrompt, userPrompt) {
     return {
         model: 'gpt-4o',
         tools: [{ type: 'web_search' }],
-        input: query
+        messages: [
+            { role: 'system', content: systemPrompt },
+            { role: 'user', content: userPrompt }
+        ]
     };
 }
 
