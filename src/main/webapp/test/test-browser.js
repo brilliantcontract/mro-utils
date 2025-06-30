@@ -54,10 +54,7 @@ QUnit.test('creates body for web search', assert => {
   const body = buildResponsesBody('sys', 'user');
   assert.equal(body.model, 'gpt-4o');
   assert.deepEqual(body.tools, [{ type: 'web_search' }]);
-  assert.deepEqual(body.messages, [
-    { role: 'system', content: 'sys' },
-    { role: 'user', content: 'user' }
-  ]);
+  assert.equal(body.input, 'sys\nuser');
 });
 
 QUnit.module('composeQuery');
