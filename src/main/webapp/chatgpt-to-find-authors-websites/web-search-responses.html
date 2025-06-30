@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
     <head>
-        <title>JavaScript documentation</title>
+        <title>Responses API Web Search</title>
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
@@ -16,116 +16,120 @@
         <h1 class="h2 mb-3 mt-5">Responses API Web Search</h1>
         <h5 class="mb-4">OpenAI gpt-4o using web search tool</h5>
 
-        <form>
-            <div class="input-group mb-3">
-                <div class="input-group-prepend">
-                    <label class="input-group-text">API Key</label>
-                </div>
-                <input type="password" data-bind="value: apiKey" class="form-control" />
-            </div>
-
-            <div class="input-group mb-4">
-                <div class="input-group-prepend">
-                    <label class="input-group-text">Query</label>
-                </div>
-                <input type="text" data-bind="value: query" class="form-control" />
-            </div>
-
-            <input type="button" data-bind="click: send" value="Send" class="btn btn-outline-dark btn-lg" />
-        </form>
+        <div class="form-group">
+            <label>API Key</label>
+            <input type="password" class="form-control" data-bind="value: apiKey" />
+        </div>
+        <div class="form-group">
+            <label>Prompt</label>
+            <input type="text" class="form-control" data-bind="value: prompt" />
+        </div>
+        <div class="form-group">
+            <button class="btn btn-primary" data-bind="click: send">Send</button>
+        </div>
 
         <h3 class="h4 mt-5">Answer</h3>
         <div class="border border-dark shadow p-3 mb-5 bg-white rounded">
-            <pre data-bind="text: answer" class="text-break"></pre>
+            <pre class="text-break" data-bind="text: answer"></pre>
         </div>
 
-        <script src="./responses-utils.js"></script>
         <script>
-            function openDb() {
-                return new Promise(function (resolve, reject) {
-                    const req = indexedDB.open('responseSearch', 1);
-                    req.onupgradeneeded = function (e) {
-                        const db = e.target.result;
-                        if (!db.objectStoreNames.contains('config')) {
-                            db.createObjectStore('config');
-                        }
-                    };
-                    req.onsuccess = function (e) { resolve(e.target.result); };
-                    req.onerror = function (e) { reject(e.target.error); };
-                });
-            }
-
-            async function loadApiKey() {
-                const db = await openDb();
-                return new Promise(function (resolve, reject) {
-                    const tx = db.transaction('config', 'readonly');
-                    const req = tx.objectStore('config').get('apiKey');
-                    req.onsuccess = function () { resolve(req.result || ''); };
-                    req.onerror = function (e) { reject(e.target.error); };
-                });
-            }
-
-            async function saveApiKey(key) {
-                const db = await openDb();
-                return new Promise(function (resolve, reject) {
-                    const tx = db.transaction('config', 'readwrite');
-                    tx.objectStore('config').put(key, 'apiKey');
-                    tx.oncomplete = function () { resolve(); };
-                    tx.onerror = function (e) { reject(e.target.error); };
-                });
-            }
-
-            async function askOpenAi(question, key) {
-                const apiRequest = new Request('https://api.openai.com/v1/responses', {
-                    method: 'POST',
-                    headers: {
-                        Authorization: 'Bearer ' + key,
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify(buildResponsesBody(question))
-                });
-
-                try {
-                    const response = await fetch(apiRequest);
-                    const json = await response.json();
-                    if (json.error) {
-                        return json.error.message;
+        function openDb() {
+            return new Promise(function (resolve, reject) {
+                const req = indexedDB.open('webSearch', 1);
+                req.onupgradeneeded = function (e) {
+                    const db = e.target.result;
+                    if (!db.objectStoreNames.contains('config')) {
+                        db.createObjectStore('config');
                     }
-                    return json.output_text;
-                } catch (ex) {
-                    return 'Error: ' + ex;
-                }
-            }
-
-            var FormModel = function () {
-                var self = this;
-                self.apiKey = ko.observable('');
-                self.query = ko.observable('What are the top 3 news headlines today?');
-                self.answer = ko.observable('');
-
-                loadApiKey().then(function (key) {
-                    self.apiKey(key);
-                });
-                self.apiKey.subscribe(function (val) {
-                    saveApiKey(val);
-                });
-
-                self.send = function () {
-                    if (!self.query().trim() || !self.apiKey().trim()) {
-                        self.answer('Please enter API key and query.');
-                        return;
-                    }
-                    self.answer('Query has been sent to chatbot. Waiting answer \u2026');
-                    askOpenAi(self.query(), self.apiKey())
-                        .then(self.answer)
-                        .catch(function (err) {
-                            console.error(err);
-                            self.answer('Error: ' + err.message);
-                        });
                 };
-            };
+                req.onsuccess = function (e) { resolve(e.target.result); };
+                req.onerror = function (e) { reject(e.target.error); };
+            });
+        }
 
-            ko.applyBindings(new FormModel());
+        async function loadApiKey() {
+            const db = await openDb();
+            return new Promise(function (resolve, reject) {
+                const tx = db.transaction('config', 'readonly');
+                const req = tx.objectStore('config').get('apiKey');
+                req.onsuccess = function () { resolve(req.result || ''); };
+                req.onerror = function (e) { reject(e.target.error); };
+            });
+        }
+
+        async function saveApiKey(key) {
+            const db = await openDb();
+            return new Promise(function (resolve, reject) {
+                const tx = db.transaction('config', 'readwrite');
+                tx.objectStore('config').put(key, 'apiKey');
+                tx.oncomplete = function () { resolve(); };
+                tx.onerror = function (e) { reject(e.target.error); };
+            });
+        }
+
+        async function askWebSearch(question, apiKey) {
+            const apiRequest = new Request('https://api.openai.com/v1/responses', {
+                method: 'POST',
+                headers: {
+                    'Authorization': 'Bearer ' + apiKey,
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    model: 'gpt-4o',
+                    tools: [{ type: 'web_search' }],
+                    input: question
+                })
+            });
+
+            let answer;
+            try {
+                const response = await fetch(apiRequest);
+                const json = await response.json();
+                if (json.error) {
+                    answer = json.error.message;
+                } else if (Array.isArray(json.output)) {
+                    var msg = json.output.find(function(o){ return o.type === 'message'; });
+                    if (msg && Array.isArray(msg.content)) {
+                        answer = msg.content.map(function(c){ return c.text; }).join('');
+                    } else {
+                        answer = JSON.stringify(json);
+                    }
+                } else {
+                    answer = JSON.stringify(json);
+                }
+            } catch (ex) {
+                answer = 'Error: ' + ex;
+            }
+            return answer;
+        }
+
+        function FormModel() {
+            var self = this;
+            self.apiKey = ko.observable('');
+            self.prompt = ko.observable('What are the top 3 news headlines today?');
+            self.answer = ko.observable('');
+
+            loadApiKey().then(function(key){ self.apiKey(key); });
+            self.apiKey.subscribe(function(val){ saveApiKey(val); });
+
+            self.send = function () {
+                var q = self.prompt().trim();
+                if (!q || !self.apiKey().trim()) {
+                    self.answer('Please fill API key and prompt.');
+                    return;
+                }
+                self.answer('Prompt has been sent. Waiting answer \u2026');
+                askWebSearch(q, self.apiKey())
+                    .then(self.answer)
+                    .catch(function(err){
+                        console.error(err);
+                        self.answer('Error: ' + err.message);
+                    });
+            };
+        }
+
+        ko.applyBindings(new FormModel());
         </script>
     </body>
 </html>
