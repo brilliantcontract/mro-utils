@@ -58,3 +58,9 @@ QUnit.test('creates body for web search', assert => {
   assert.equal(body.input, q);
 });
 
+QUnit.module('composeQuery');
+QUnit.test('trims and joins prompts', assert => {
+  const result = composeQuery(' sys ', ' user ');
+  assert.equal(result, 'sys\nuser');
+});
+
