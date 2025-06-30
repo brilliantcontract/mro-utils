@@ -2,10 +2,7 @@ function buildResponsesBody(systemPrompt, userPrompt) {
     return {
         model: 'gpt-4o',
         tools: [{ type: 'web_search' }],
-        messages: [
-            { role: 'system', content: systemPrompt },
-            { role: 'user', content: userPrompt }
-        ]
+        input: composeQuery(systemPrompt, userPrompt)
     };
 }
 
