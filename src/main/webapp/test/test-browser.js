@@ -49,3 +49,12 @@ QUnit.test('joins values with new lines', assert => {
   assert.equal(result, '1\n0\n2');
 });
 
+QUnit.module('buildResponsesBody');
+QUnit.test('creates body for web search', assert => {
+  const q = 'test query';
+  const body = buildResponsesBody(q);
+  assert.equal(body.model, 'gpt-4o');
+  assert.deepEqual(body.tools, [{ type: 'web_search' }]);
+  assert.equal(body.input, q);
+});
+
