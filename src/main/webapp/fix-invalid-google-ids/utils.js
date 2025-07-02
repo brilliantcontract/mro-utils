@@ -6,6 +6,7 @@ function parseTabText(text) {
   const start = hasHeader ? 1 : 0;
 
   const colsOld = ['ID','GOOGLE_PLACE_ID','NAME','ADDRESS','CITY','STATE','ZIP','IS_VALID_MANUAL','IS_VALID','SEARCH_QUERY','JSON_DATA_FROM_GOOGLE_MAP'];
+  // New format does not contain manual validation fields
   const colsNew = ['ID','GOOGLE_PLACE_ID','CID','NAME','ADDRESS','CITY','STATE','ZIP','SEARCH_QUERY','JSON_DATA_FROM_GOOGLE_MAP'];
 
   let useNew = false;
@@ -35,7 +36,6 @@ function parseTabText(text) {
     });
 
     if (useNew) {
-      obj.IS_VALID_MANUAL = '';
       if (typeof ko !== 'undefined' && typeof ko.observable === 'function') {
         obj.IS_VALID = ko.observable('');
       } else {
