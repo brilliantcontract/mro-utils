@@ -33,9 +33,9 @@
                     <th>CITY</th>
                     <th>STATE</th>
                     <th>ZIP</th>
-                    <th>IS_VALID_MANUAL</th>
-                    <th>IS_VALID</th>
                     <th>SEARCH_QUERY</th>
+                    <th class="d-none">JSON_DATA_FROM_GOOGLE_MAP</th>
+                    <th>IS_VALID</th>
                 </tr>
             </thead>
             <tbody data-bind="foreach: records">
@@ -48,9 +48,9 @@
                     <td data-bind="text: CITY"></td>
                     <td data-bind="text: STATE"></td>
                     <td data-bind="text: ZIP"></td>
-                    <td data-bind="text: IS_VALID_MANUAL"></td>
-                    <td data-bind="text: IS_VALID"></td>
                     <td data-bind="text: SEARCH_QUERY"></td>
+                    <td class="d-none" data-bind="text: JSON_DATA_FROM_GOOGLE_MAP"></td>
+                    <td data-bind="text: IS_VALID"></td>
                 </tr>
             </tbody>
         </table>
