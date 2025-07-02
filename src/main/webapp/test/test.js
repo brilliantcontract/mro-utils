@@ -32,10 +32,11 @@ import { parseTabText, validateRecords } from '../fix-invalid-google-ids/utils.j
 module('parseTabText');
 
 test('parses tab separated lines', assert => {
-  const text = 'ID\tGOOGLE_PLACE_ID\tNAME\n1\ta\tfoo';
+  const text = 'ID\tGOOGLE_PLACE_ID\tCID\tNAME\n1\ta\tc1\tfoo';
   const result = parseTabText(text);
   assert.equal(result.length, 1);
   assert.equal(result[0].ID, '1');
+  assert.equal(result[0].CID, 'c1');
   assert.equal(result[0].NAME, 'foo');
 });
 
@@ -43,8 +44,8 @@ module('validateRecords');
 
 test('marks matching name as valid', assert => {
   const recs = [
-    {ID:'1', GOOGLE_PLACE_ID:'a', NAME:'Foo', ADDRESS:'', CITY:'X', STATE:'S', ZIP:'', IS_VALID_MANUAL:'', IS_VALID:'', SEARCH_QUERY:'q', JSON_DATA_FROM_GOOGLE_MAP:'{"places":[{"title":"Foo","address":"addr"}]}'},
-    {ID:'2', GOOGLE_PLACE_ID:'b', NAME:'Bar', ADDRESS:'', CITY:'X', STATE:'S', ZIP:'', IS_VALID_MANUAL:'', IS_VALID:'', SEARCH_QUERY:'q', JSON_DATA_FROM_GOOGLE_MAP:'{"places":[{"title":"Foo","address":"addr"}]}'}
+    {ID:'1', GOOGLE_PLACE_ID:'a', CID:'c1', NAME:'Foo', ADDRESS:'', CITY:'X', STATE:'S', ZIP:'', IS_VALID_MANUAL:'', IS_VALID:'', SEARCH_QUERY:'q', JSON_DATA_FROM_GOOGLE_MAP:'{"places":[{"title":"Foo","address":"addr"}]}'},
+    {ID:'2', GOOGLE_PLACE_ID:'b', CID:'c2', NAME:'Bar', ADDRESS:'', CITY:'X', STATE:'S', ZIP:'', IS_VALID_MANUAL:'', IS_VALID:'', SEARCH_QUERY:'q', JSON_DATA_FROM_GOOGLE_MAP:'{"places":[{"title":"Foo","address":"addr"}]}'}
   ];
   validateRecords(recs);
   assert.equal(recs[0].IS_VALID, '1');
@@ -53,8 +54,8 @@ test('marks matching name as valid', assert => {
 
 test('clears values when all are invalid', assert => {
   const recs = [
-    {ID:'1', GOOGLE_PLACE_ID:'a', NAME:'Foo', ADDRESS:'', CITY:'X', STATE:'S', ZIP:'', IS_VALID_MANUAL:'', IS_VALID:'', SEARCH_QUERY:'w', JSON_DATA_FROM_GOOGLE_MAP:'{"places":[]}'},
-    {ID:'2', GOOGLE_PLACE_ID:'b', NAME:'Bar', ADDRESS:'', CITY:'X', STATE:'S', ZIP:'', IS_VALID_MANUAL:'', IS_VALID:'', SEARCH_QUERY:'w', JSON_DATA_FROM_GOOGLE_MAP:'{"places":[]}'}
+    {ID:'1', GOOGLE_PLACE_ID:'a', CID:'c1', NAME:'Foo', ADDRESS:'', CITY:'X', STATE:'S', ZIP:'', IS_VALID_MANUAL:'', IS_VALID:'', SEARCH_QUERY:'w', JSON_DATA_FROM_GOOGLE_MAP:'{"places":[]}'},
+    {ID:'2', GOOGLE_PLACE_ID:'b', CID:'c2', NAME:'Bar', ADDRESS:'', CITY:'X', STATE:'S', ZIP:'', IS_VALID_MANUAL:'', IS_VALID:'', SEARCH_QUERY:'w', JSON_DATA_FROM_GOOGLE_MAP:'{"places":[]}'}
   ];
   validateRecords(recs);
   assert.equal(recs[0].IS_VALID, '');
