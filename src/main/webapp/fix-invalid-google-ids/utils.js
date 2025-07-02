@@ -4,7 +4,19 @@ function parseTabText(text) {
   const header = lines[0].split('\t');
   const hasHeader = header[0] === 'ID';
   const start = hasHeader ? 1 : 0;
-  const cols = ['ID','GOOGLE_PLACE_ID','NAME','ADDRESS','CITY','STATE','ZIP','IS_VALID_MANUAL','IS_VALID','SEARCH_QUERY','JSON_DATA_FROM_GOOGLE_MAP'];
+
+  const colsOld = ['ID','GOOGLE_PLACE_ID','NAME','ADDRESS','CITY','STATE','ZIP','IS_VALID_MANUAL','IS_VALID','SEARCH_QUERY','JSON_DATA_FROM_GOOGLE_MAP'];
+  const colsNew = ['ID','GOOGLE_PLACE_ID','CID','NAME','ADDRESS','CITY','STATE','ZIP','SEARCH_QUERY','JSON_DATA_FROM_GOOGLE_MAP'];
+
+  let useNew = false;
+  if (hasHeader) {
+    useNew = header.includes('CID');
+  } else {
+    const parts = lines[0].split('\t');
+    useNew = parts.length === colsNew.length;
+  }
+
+  const cols = useNew ? colsNew : colsOld;
   const records = [];
   for (let i = start; i < lines.length; i++) {
     const parts = lines[i].split('\t');
@@ -21,6 +33,15 @@ function parseTabText(text) {
         obj[c] = val;
       }
     });
+
+    if (useNew) {
+      obj.IS_VALID_MANUAL = '';
+      if (typeof ko !== 'undefined' && typeof ko.observable === 'function') {
+        obj.IS_VALID = ko.observable('');
+      } else {
+        obj.IS_VALID = '';
+      }
+    }
     records.push(obj);
   }
   return records;
