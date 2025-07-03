@@ -11,6 +11,8 @@ function AppViewModel() {
 
   this.validate = () => {
     validateRecords(this.records());
+    populateNewData(this.records());
+    showNewDataColumn();
   };
 
   this.copyIsValid = () => {
@@ -20,3 +22,8 @@ function AppViewModel() {
 }
 
 ko.applyBindings(new AppViewModel());
+
+function showNewDataColumn() {
+  document.getElementById('new-data-th').classList.remove('d-none');
+  document.querySelectorAll('.new-data-cell').forEach(td => td.classList.remove('d-none'));
+}

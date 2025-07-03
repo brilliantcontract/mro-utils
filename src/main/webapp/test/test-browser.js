@@ -96,3 +96,22 @@ QUnit.test('trims and joins prompts', assert => {
   assert.equal(result, 'sys\nuser');
 });
 
+QUnit.module('populateNewData');
+QUnit.test('copies place when valid', assert => {
+  const rec = {
+    JSON_DATA_FROM_GOOGLE_MAP: '{"places":[{"title":"Foo"}]}',
+    IS_VALID: ko.observable('1')
+  };
+  populateNewData([rec]);
+  assert.equal(rec.NEW_DATA(), '{"title":"Foo"}');
+});
+
+QUnit.test('leaves empty when invalid', assert => {
+  const rec = {
+    JSON_DATA_FROM_GOOGLE_MAP: '{"places":[{"title":"Foo"}]}',
+    IS_VALID: ko.observable('0')
+  };
+  populateNewData([rec]);
+  assert.equal(rec.NEW_DATA(), '');
+});
+

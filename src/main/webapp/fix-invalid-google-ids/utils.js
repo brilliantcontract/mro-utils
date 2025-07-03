@@ -172,9 +172,41 @@ function collectIsValid(records) {
   return records.map(r => getIsValid(r)).join('\n');
 }
 
+function populateNewData(records) {
+  const hasKo = typeof ko !== 'undefined' && typeof ko.observable === 'function';
+  for (const rec of records) {
+    if (typeof rec.NEW_DATA === 'undefined') {
+      rec.NEW_DATA = hasKo ? ko.observable('') : '';
+    } else if (typeof rec.NEW_DATA === 'function') {
+      rec.NEW_DATA('');
+    } else {
+      rec.NEW_DATA = '';
+    }
+
+    if (getIsValid(rec) === '1') {
+      try {
+        const json = JSON.parse(rec.JSON_DATA_FROM_GOOGLE_MAP);
+        const place = json.places && json.places[0];
+        if (place) {
+          const text = JSON.stringify(place);
+          if (typeof rec.NEW_DATA === 'function') {
+            rec.NEW_DATA(text);
+          } else {
+            rec.NEW_DATA = text;
+          }
+        }
+      } catch (e) {
+        // ignore parse errors
+      }
+    }
+  }
+  return records;
+}
+
 if (typeof window !== 'undefined') {
   window.parseTabText = parseTabText;
   window.validateRecords = validateRecords;
   window.validateRecordsByCid = validateRecordsByCid;
   window.collectIsValid = collectIsValid;
+  window.populateNewData = populateNewData;
 }
