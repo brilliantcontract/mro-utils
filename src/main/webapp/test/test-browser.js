@@ -126,6 +126,18 @@ QUnit.test('leaves empty when invalid', assert => {
   assert.equal(rec.NEW_DATA(), '');
 });
 
+QUnit.test('selects matching place when value is 3', assert => {
+  const data = '{"places":[{"title":"Foo","address":"A"},{"title":"Foo","address":"B"}]}';
+  const rec = {
+    NAME: 'Foo',
+    ADDRESS: 'B',
+    JSON_DATA_FROM_GOOGLE_MAP: data,
+    IS_VALID: ko.observable('3')
+  };
+  populateNewData([rec]);
+  assert.equal(rec.NEW_DATA(), '{"title":"Foo","address":"B"}');
+});
+
 QUnit.module('collectNewData');
 QUnit.test('joins NEW_DATA values with new lines', assert => {
   const recs = [

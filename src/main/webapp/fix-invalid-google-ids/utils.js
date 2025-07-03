@@ -79,6 +79,25 @@ function recordExistsInJson(rec) {
   return false;
 }
 
+function findPlaceInJson(rec) {
+  try {
+    const json = JSON.parse(rec.JSON_DATA_FROM_GOOGLE_MAP);
+    const places = json.places || [];
+    for (const place of places) {
+      if (normalizeString(place.title) === normalizeString(rec.NAME)) {
+        if (!rec.ADDRESS) return place;
+        if (place.address &&
+            normalizeString(place.address).startsWith(normalizeString(rec.ADDRESS))) {
+          return place;
+        }
+      }
+    }
+  } catch (e) {
+    // ignore parse errors
+  }
+  return null;
+}
+
 function validateRecords(records) {
   const groups = new Map();
   for (const rec of records) {
@@ -248,6 +267,16 @@ function populateNewData(records) {
         }
       } catch (e) {
         // ignore parse errors
+      }
+    } else if (getIsValid(rec) === '3') {
+      const place = findPlaceInJson(rec);
+      if (place) {
+        const text = JSON.stringify(place);
+        if (typeof rec.NEW_DATA === 'function') {
+          rec.NEW_DATA(text);
+        } else {
+          rec.NEW_DATA = text;
+        }
       }
     }
   }
