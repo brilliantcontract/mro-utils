@@ -36,6 +36,7 @@
                     <th>SEARCH_QUERY</th>
                     <th class="d-none">JSON_DATA_FROM_GOOGLE_MAP</th>
                     <th>IS_VALID</th>
+                    <th id="new-data-th" class="d-none">NEW_DATA</th>
                 </tr>
             </thead>
             <tbody data-bind="foreach: records">
@@ -51,6 +52,7 @@
                     <td data-bind="text: SEARCH_QUERY"></td>
                     <td class="d-none" data-bind="text: JSON_DATA_FROM_GOOGLE_MAP"></td>
                     <td data-bind="text: IS_VALID"></td>
+                    <td class="new-data-cell d-none" data-bind="text: NEW_DATA"></td>
                 </tr>
             </tbody>
         </table>
