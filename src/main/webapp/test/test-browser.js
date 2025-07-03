@@ -40,6 +40,27 @@ QUnit.test('clears values when all are invalid', assert => {
   assert.equal(recs[1].IS_VALID(), '');
 });
 
+QUnit.module('validateRecordsByCid');
+QUnit.test('skips group with identical cid', assert => {
+  const recs = [
+    {ID:'1', GOOGLE_PLACE_ID:'x', CID:'111', NAME:'A', ADDRESS:'', CITY:'', STATE:'', ZIP:'', IS_VALID: ko.observable(''), SEARCH_QUERY:'', JSON_DATA_FROM_GOOGLE_MAP:'{}'},
+    {ID:'2', GOOGLE_PLACE_ID:'x', CID:'111', NAME:'B', ADDRESS:'', CITY:'', STATE:'', ZIP:'', IS_VALID: ko.observable(''), SEARCH_QUERY:'', JSON_DATA_FROM_GOOGLE_MAP:'{}'}
+  ];
+  validateRecordsByCid(recs);
+  assert.equal(recs[0].IS_VALID(), '');
+  assert.equal(recs[1].IS_VALID(), '');
+});
+
+QUnit.test('marks record matching json cid', assert => {
+  const recs = [
+    {ID:'1', GOOGLE_PLACE_ID:'y', CID:'123', NAME:'A', ADDRESS:'', CITY:'', STATE:'', ZIP:'', IS_VALID: ko.observable(''), SEARCH_QUERY:'', JSON_DATA_FROM_GOOGLE_MAP:'{"places":[{"cid":"456"}]}'},
+    {ID:'2', GOOGLE_PLACE_ID:'y', CID:'456', NAME:'B', ADDRESS:'', CITY:'', STATE:'', ZIP:'', IS_VALID: ko.observable(''), SEARCH_QUERY:'', JSON_DATA_FROM_GOOGLE_MAP:'{"places":[{"cid":"456"}]}'}
+  ];
+  validateRecordsByCid(recs);
+  assert.equal(recs[0].IS_VALID(), '0');
+  assert.equal(recs[1].IS_VALID(), '1');
+});
+
 QUnit.module('collectIsValid');
 QUnit.test('joins values with new lines', assert => {
   const recs = [

@@ -27,7 +27,7 @@ test('returns cached result on second call', async assert => {
   assert.equal(r1, 'a-result', 'first result matches');
   assert.equal(r2, 'a-result', 'second result matches cached value');
 });
-import { parseTabText, validateRecords } from '../fix-invalid-google-ids/utils.js';
+import { parseTabText, validateRecords, validateRecordsByCid } from '../fix-invalid-google-ids/utils.js';
 
 module('parseTabText');
 
@@ -61,5 +61,27 @@ test('clears values when all are invalid', assert => {
   validateRecords(recs);
   assert.equal(recs[0].IS_VALID, '');
   assert.equal(recs[1].IS_VALID, '');
+});
+
+module('validateRecordsByCid');
+
+test('skips group with identical cid', assert => {
+  const recs = [
+    {ID:'1', GOOGLE_PLACE_ID:'x', CID:'111', NAME:'A', ADDRESS:'', CITY:'', STATE:'', ZIP:'', IS_VALID:'', SEARCH_QUERY:'', JSON_DATA_FROM_GOOGLE_MAP:'{}'},
+    {ID:'2', GOOGLE_PLACE_ID:'x', CID:'111', NAME:'B', ADDRESS:'', CITY:'', STATE:'', ZIP:'', IS_VALID:'', SEARCH_QUERY:'', JSON_DATA_FROM_GOOGLE_MAP:'{}'}
+  ];
+  validateRecordsByCid(recs);
+  assert.equal(recs[0].IS_VALID, '');
+  assert.equal(recs[1].IS_VALID, '');
+});
+
+test('marks record matching json cid', assert => {
+  const recs = [
+    {ID:'1', GOOGLE_PLACE_ID:'y', CID:'123', NAME:'A', ADDRESS:'', CITY:'', STATE:'', ZIP:'', IS_VALID:'', SEARCH_QUERY:'', JSON_DATA_FROM_GOOGLE_MAP:'{"places":[{"cid":"456"}]}'},
+    {ID:'2', GOOGLE_PLACE_ID:'y', CID:'456', NAME:'B', ADDRESS:'', CITY:'', STATE:'', ZIP:'', IS_VALID:'', SEARCH_QUERY:'', JSON_DATA_FROM_GOOGLE_MAP:'{"places":[{"cid":"456"}]}'}
+  ];
+  validateRecordsByCid(recs);
+  assert.equal(recs[0].IS_VALID, '0');
+  assert.equal(recs[1].IS_VALID, '1');
 });
 
