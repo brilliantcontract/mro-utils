@@ -172,6 +172,14 @@ function collectIsValid(records) {
   return records.map(r => getIsValid(r)).join('\n');
 }
 
+function getNewData(rec) {
+  return typeof rec.NEW_DATA === 'function' ? rec.NEW_DATA() : rec.NEW_DATA;
+}
+
+function collectNewData(records) {
+  return records.map(r => getNewData(r)).join('\n');
+}
+
 function populateNewData(records) {
   const hasKo = typeof ko !== 'undefined' && typeof ko.observable === 'function';
   for (const rec of records) {
@@ -208,5 +216,6 @@ if (typeof window !== 'undefined') {
   window.validateRecords = validateRecords;
   window.validateRecordsByCid = validateRecordsByCid;
   window.collectIsValid = collectIsValid;
+  window.collectNewData = collectNewData;
   window.populateNewData = populateNewData;
 }
