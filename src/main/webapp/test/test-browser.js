@@ -50,6 +50,17 @@ QUnit.test('clears values when all are invalid', assert => {
   assert.equal(recs[1].IS_VALID(), '');
 });
 
+QUnit.test('sets 3 when all records found', assert => {
+  const json = '{"places":[{"title":"Foo","address":"A"},{"title":"Bar","address":"B"}]}';
+  const recs = [
+    {ID:'1', GOOGLE_PLACE_ID:'g1', CID:'', NAME:'Foo', ADDRESS:'A', CITY:'X', STATE:'S', ZIP:'', IS_VALID: ko.observable(''), SEARCH_QUERY:'q', JSON_DATA_FROM_GOOGLE_MAP:json},
+    {ID:'2', GOOGLE_PLACE_ID:'g1', CID:'', NAME:'Bar', ADDRESS:'B', CITY:'X', STATE:'S', ZIP:'', IS_VALID: ko.observable(''), SEARCH_QUERY:'q', JSON_DATA_FROM_GOOGLE_MAP:json}
+  ];
+  validateRecords(recs);
+  assert.equal(recs[0].IS_VALID(), '3');
+  assert.equal(recs[1].IS_VALID(), '3');
+});
+
 QUnit.module('validateRecordsByCid');
 QUnit.test('skips group with identical cid', assert => {
   const recs = [

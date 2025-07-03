@@ -60,6 +60,25 @@ function normalizeString(str) {
     .replace(/[^a-z0-9 ]+/gi, '');
 }
 
+function recordExistsInJson(rec) {
+  try {
+    const json = JSON.parse(rec.JSON_DATA_FROM_GOOGLE_MAP);
+    const places = json.places || [];
+    for (const place of places) {
+      if (normalizeString(place.title) === normalizeString(rec.NAME)) {
+        if (!rec.ADDRESS) return true;
+        if (place.address &&
+            normalizeString(place.address).startsWith(normalizeString(rec.ADDRESS))) {
+          return true;
+        }
+      }
+    }
+  } catch (e) {
+    // ignore parse errors
+  }
+  return false;
+}
+
 function validateRecords(records) {
   const groups = new Map();
   for (const rec of records) {
@@ -108,6 +127,24 @@ function validateRecords(records) {
     const allZero = group.every(r => getIsValid(r) === '0');
     if (allZero) {
       group.forEach(r => setIsValid(r, ''));
+    }
+  }
+  markAllFound(records);
+  return records;
+}
+
+function markAllFound(records) {
+  const groups = new Map();
+  for (const rec of records) {
+    if (!groups.has(rec.GOOGLE_PLACE_ID)) groups.set(rec.GOOGLE_PLACE_ID, []);
+    groups.get(rec.GOOGLE_PLACE_ID).push(rec);
+  }
+
+  for (const group of groups.values()) {
+    if (group.length <= 1) continue;
+    const all = group.every(recordExistsInJson);
+    if (all) {
+      group.forEach(r => setIsValid(r, '3'));
     }
   }
   return records;
