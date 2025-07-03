@@ -115,3 +115,13 @@ QUnit.test('leaves empty when invalid', assert => {
   assert.equal(rec.NEW_DATA(), '');
 });
 
+QUnit.module('collectNewData');
+QUnit.test('joins NEW_DATA values with new lines', assert => {
+  const recs = [
+    { NEW_DATA: ko.observable('{"a":1}') },
+    { NEW_DATA: ko.observable('{"b":2}') }
+  ];
+  const result = collectNewData(recs);
+  assert.equal(result, '{"a":1}\n{"b":2}');
+});
+

@@ -17,6 +17,11 @@ function AppViewModel() {
     const text = collectIsValid(this.records());
     navigator.clipboard.writeText(text);
   };
+
+  this.copyNewData = () => {
+    const text = collectNewData(this.records());
+    navigator.clipboard.writeText(text);
+  };
 }
 
 ko.applyBindings(new AppViewModel());
