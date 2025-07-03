@@ -8,7 +8,7 @@ function AppViewModel() {
   };
 
   this.validate = () => {
-    // no validation logic required
+    validateRecordsByCid(this.records());
   };
 
   this.copyIsValid = () => {

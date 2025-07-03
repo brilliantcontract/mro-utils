@@ -100,6 +100,55 @@ function validateRecords(records) {
   return records;
 }
 
+function validateRecordsByCid(records) {
+  const groups = new Map();
+  for (const rec of records) {
+    if (!groups.has(rec.GOOGLE_PLACE_ID)) groups.set(rec.GOOGLE_PLACE_ID, []);
+    groups.get(rec.GOOGLE_PLACE_ID).push(rec);
+  }
+
+  for (const group of groups.values()) {
+    const cids = group.map(r => r.CID);
+    const unique = new Set(cids);
+
+    if (unique.size === 1) {
+      group.forEach(r => setIsValid(r, ''));
+      continue;
+    }
+
+    const hasCid = cids.some(c => c);
+    if (!hasCid) {
+      group.forEach(r => setIsValid(r, ''));
+      continue;
+    }
+
+    let matched = null;
+    for (const r of group) {
+      if (!r.CID) continue;
+      try {
+        const json = JSON.parse(r.JSON_DATA_FROM_GOOGLE_MAP);
+        const place = json.places && json.places[0];
+        if (place && String(place.cid) === String(r.CID)) {
+          matched = r;
+          break;
+        }
+      } catch (e) {
+        // ignore parse errors
+      }
+    }
+
+    if (matched) {
+      group.forEach(r => setIsValid(r, r === matched ? '1' : '0'));
+    } else {
+      group.forEach(r => setIsValid(r, '0'));
+      if (group.every(r => getIsValid(r) === '0')) {
+        group.forEach(r => setIsValid(r, ''));
+      }
+    }
+  }
+  return records;
+}
+
 function setIsValid(rec, value) {
   if (typeof rec.IS_VALID === 'function') {
     rec.IS_VALID(value);
@@ -119,5 +168,6 @@ function collectIsValid(records) {
 if (typeof window !== 'undefined') {
   window.parseTabText = parseTabText;
   window.validateRecords = validateRecords;
+  window.validateRecordsByCid = validateRecordsByCid;
   window.collectIsValid = collectIsValid;
 }
