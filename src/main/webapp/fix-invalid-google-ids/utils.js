@@ -42,6 +42,12 @@ function parseTabText(text) {
         obj.IS_VALID = '';
       }
     }
+
+    if (typeof ko !== 'undefined' && typeof ko.observable === 'function') {
+      obj.NEW_DATA = ko.observable('');
+    } else {
+      obj.NEW_DATA = '';
+    }
     records.push(obj);
   }
   return records;
