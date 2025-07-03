@@ -30,6 +30,16 @@ QUnit.test('marks matching name as valid', assert => {
   assert.equal(recs[1].IS_VALID(), '0');
 });
 
+QUnit.test('ignores case and punctuation when matching', assert => {
+  const recs = [
+    {ID:'1', GOOGLE_PLACE_ID:'a', CID:'', NAME:'ACME, Inc.', ADDRESS:'123 Main St.', CITY:'X', STATE:'S', ZIP:'', IS_VALID: ko.observable(''), SEARCH_QUERY:'x', JSON_DATA_FROM_GOOGLE_MAP:'{"places":[{"title":"acme inc","address":"123 main st suite"}]}'},
+    {ID:'2', GOOGLE_PLACE_ID:'b', CID:'', NAME:'Other', ADDRESS:'', CITY:'X', STATE:'S', ZIP:'', IS_VALID: ko.observable(''), SEARCH_QUERY:'x', JSON_DATA_FROM_GOOGLE_MAP:'{"places":[{"title":"acme inc","address":"123 main st suite"}]}'}
+  ];
+  validateRecords(recs);
+  assert.equal(recs[0].IS_VALID(), '1');
+  assert.equal(recs[1].IS_VALID(), '0');
+});
+
 QUnit.test('clears values when all are invalid', assert => {
   const recs = [
     {ID:'1', GOOGLE_PLACE_ID:'a', CID:'c1', NAME:'Foo', ADDRESS:'', CITY:'X', STATE:'S', ZIP:'', IS_VALID: ko.observable(''), SEARCH_QUERY:'w', JSON_DATA_FROM_GOOGLE_MAP:'{"places":[]}'},

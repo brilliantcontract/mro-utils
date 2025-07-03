@@ -47,6 +47,13 @@ function parseTabText(text) {
   return records;
 }
 
+function normalizeString(str) {
+  return (str || '')
+    .trim()
+    .toLowerCase()
+    .replace(/[^a-z0-9 ]+/gi, '');
+}
+
 function validateRecords(records) {
   const groups = new Map();
   for (const rec of records) {
@@ -67,7 +74,7 @@ function validateRecords(records) {
     }));
     const titleMatches = parsed.filter(p => {
       const place = p.json.places && p.json.places[0];
-      return place && place.title === p.rec.NAME;
+      return place && normalizeString(place.title) === normalizeString(p.rec.NAME);
     });
 
     if (titleMatches.length === 1) {
@@ -79,7 +86,7 @@ function validateRecords(records) {
       const addressMatches = titleMatches.filter(p => {
         const place = p.json.places && p.json.places[0];
         if (!place || !p.rec.ADDRESS) return false;
-        return place.address.startsWith(p.rec.ADDRESS);
+        return normalizeString(place.address).startsWith(normalizeString(p.rec.ADDRESS));
       });
       if (addressMatches.length >= 1) {
         const chosen = addressMatches[0].rec;
